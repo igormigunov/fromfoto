@@ -3,7 +3,7 @@
 <? require_once($_SERVER["DOCUMENT_ROOT"]."/ajax/yadisk.php");?>
 <? require_once($_SERVER["DOCUMENT_ROOT"]."/ajax/common_data.php");?>
 <?
-
+global $USER;
 $user = new CUser;
 $rsUser = CUser::GetByLogin($_POST['email_vk']);
 if($arUser = $rsUser->Fetch()){
@@ -27,7 +27,7 @@ if($arUser = $rsUser->Fetch()){
 		$errors[] = $user->LAST_ERROR;
 }
 if(!$errors){
-
+	$USER->Authorize($user_id);
 	$el = new CIBlockElement;
 
 
