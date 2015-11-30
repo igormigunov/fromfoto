@@ -1,0 +1,23 @@
+.information{
+	margin: 10px 0px 5px 0px;
+}
+
+.information .name_info{
+	font-family: "Days","Arial",sans-serif;
+	font-size:20px;
+	color:#5d7395;
+	text-transform: uppercase;
+}
+
+.information .description{
+	font-size:14px;
+	color:#000000;
+	text-align: justify;
+	margin: 5px 0px;
+}
+
+.information .info_about{
+	font-size:14px;
+	font-family: "Days","Arial",sans-serif;
+	color:#5d7395;
+}

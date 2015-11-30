@@ -1,0 +1,1 @@
+&copy; 2014 Create your video. All rights reserved.

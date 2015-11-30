@@ -1,0 +1,39 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Вконтакте", 
+		"http://vk.com/fromfoto", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Одноклассники", 
+		"http://www.odnoklassniki.ru/fromfoto", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Facebook", 
+		"/#menu-contact", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"", 
+		"/#menu-pricing", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"", 
+		"/#menu-news", 
+		Array(), 
+		Array(), 
+		"" 
+	)
+);
+?>
