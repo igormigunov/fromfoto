@@ -1,0 +1,129 @@
+.simple_table{
+		margin: 30px auto;
+	}
+	.simple_table td{
+		color:#000001;
+		font-size:24px;
+		padding: 12px 15px;
+	}
+	.simple_table td.bordr{
+		padding: 5px 0px;
+	}
+	.simple_table td a{
+		color:#000001;
+		font-size:24px;
+		text-decoration:none;
+	}
+	.simple_table td a:hover{
+		text-decoration:none;
+	}
+/*	
+	a#tell_friends{
+		background:url(/images/bgr_ord_btn.png) repeat;
+		border: 2px solid #000001;
+		box-shadow: none;
+		color: #030303 !important;
+		display: block;
+		font-size: 19px;
+		height: 50px;
+		padding: 6px 20px 0;
+		text-align: center;
+		text-decoration: none;
+		text-transform: none;
+		width: 207px;
+		margin:auto;
+		font-weight:700;
+		line-height: 1;
+	}
+	
+	a#tell_friends:hover{
+		background: #fefefe; 
+	}
+*/	
+.simple_table th {
+  color: #5d7395;
+  font-size: 27px;
+  padding-bottom: 30px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.simple_table .l{
+	text-align:left;
+}
+.first_coll {
+	border-bottom: 1px solid #5d7395;
+}
+.simple_table .r{
+	text-align:right;
+	padding-right: 15px !important;
+}
+
+.simple_table th.l{
+	padding-left: 10px !important;
+}
+
+.countdown.countdownHolder{
+	font-family:"Days","HeliosThin","Arial",sans-serif;
+}
+
+.simple_table .c{
+	text-align:center;
+}
+
+.simple_table td.first_td{
+	padding-top:35px;
+}
+
+.chel_login{
+	height: 75px;
+	background:#e9ecf0;
+	width:100%;
+	font-family:"Days","HeliosThin","Arial",sans-serif;
+	padding:0 54px;
+	display:table;
+}
+
+.chel_login div{
+	display:table-cell;
+	width:50%;
+	vertical-align:middle;
+	color:#5d7395;
+	font-size:24px;
+}
+
+.chel_login div.rg{
+	text-align:right;
+	color:#93a2b9;
+	font-size:18px;
+}
+
+.create_new.btn_go{
+	font-size: 14px;
+	height: 40px;
+	padding-top: 8px;
+	text-transform:uppercase;
+}
+
+.name_clip{
+	font-family:"Days","HeliosThin","Arial",sans-serif;
+	color:#5d7395 !important;
+	text-transform:uppercase;
+	font-size:22px;
+}
+
+.simple_table a.add_changes {
+  background: none repeat scroll 0 0 #e9ecf0;
+  border-radius: 5px;
+  color: #5d7395;
+  display: inline-block;
+  font-family: "Days","HeliosThin","Arial",sans-serif;
+  font-size: 12px;
+  padding: 7px 15px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.simple_table a.add_changes:hover{
+	background:#c6d3e7;
+}

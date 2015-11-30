@@ -1,0 +1,255 @@
+<? require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");?>
+
+<? require_once($_SERVER["DOCUMENT_ROOT"]."/ajax/yadisk.php");?>
+
+
+
+<?
+
+CModule::IncludeModule("iblock");
+
+
+
+$clip_ids = array();
+
+foreach($_REQUEST as $k=>$v){
+
+	if(preg_match("/zakaz/",$k)){
+
+		$ids = explode("_",$v);
+
+		$clip_ids[] = $ids[0];
+
+	}
+
+}
+
+
+
+$arFilter = Array(
+
+   "IBLOCK_TYPE"=>"clips", 
+
+   "ACTIVE"=>"Y", 
+
+   "ID"=>$clip_ids
+
+   );
+
+$res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter, false, false, array("NAME","ID","PROPERTY_TYPE_CLIP","PROPERTY_USER_EMAIL","PROPERTY_USER_NAME","PROPERTY_USER","PROPERTY_NO_LOGO","PROPERTY_VIDEO_COUNT"));
+
+
+
+$ar_clip = array();
+
+$clip_options_id = array();
+
+while($clip = $res->GetNext()){
+
+	$ar_clip[$clip['ID']] = $clip;
+
+	$clip_options_id[] = $clip['PROPERTY_TYPE_CLIP_VALUE'];
+
+}
+
+
+
+$arFilter = Array(
+
+   "IBLOCK_TYPE"=>"clips", 
+
+   "ACTIVE"=>"Y", 
+
+   "ID"=>$clip_options_id
+
+   );
+
+$res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter, false, false, array("NAME","ID","IBLOCK_ID","PROPERTY_FREE_PERIOD"));
+
+
+
+$ar_clip_option = array();
+
+while($clip_option = $res->GetNext()){
+
+	$ar_clip_option[$clip_option['ID']] = $clip_option;
+
+}
+
+
+
+
+
+foreach($ar_clip as $k=>$v){
+
+	$ar_clip[$k]['clip_options'] = $ar_clip_option[$v['PROPERTY_TYPE_CLIP_VALUE']];
+
+}
+
+
+
+
+
+$conf = new Config();
+
+$logger = new Logger();
+
+$YaAuth = new YaAuth($conf,$logger);
+
+$YaDisk = new YaDisk($YaAuth->getToken(),$conf,$logger);
+
+
+
+
+
+$videos = array();
+
+$folders = array();
+
+foreach($_REQUEST as $k=>$v){
+
+	if(preg_match("/zakaz/",$k)){
+		
+		$folders[$v] = $v;
+
+		/*$files = $YaDisk->ls('/'.$v.'/Video/');
+
+		if(is_array($files)){
+
+			foreach($files as $k_f=>$v_f){
+
+				if($v_f['type'] == 'f' && preg_match("/\.mp4/",$v_f['href'])){
+
+					$videos[$v][] = $v_f['href'];
+
+					//break 1;
+
+				}
+
+			}
+
+		}*/
+
+	}
+
+}
+
+
+
+
+$el = new CIBlockElement;
+
+
+
+foreach($folders as $k=>$v){
+	
+	
+	$ids = explode("_",$k);
+	
+
+	//$YaDisk->download($v[0],'/upload/clips'.$v[0]);
+	//$YaDisk->download($v[1],'/upload/clips'.$v[1]);
+	
+	
+	$arFields = array(
+
+		"NAME" => $ar_clip[$ids[0]]['PROPERTY_USER_NAME_VALUE'],
+
+		"EMAIL" => $ar_clip[$ids[0]]['PROPERTY_USER_EMAIL_VALUE'],
+
+		"LINK" => 'http://'.$_SERVER['HTTP_HOST'].'/clip/?num='.$ids[0],
+
+	 );
+	 
+	 $site_id = (isset($ar_clip[$ids[0]]['clip_options']['IBLOCK_ID']) && $ar_clip[$ids[0]]['clip_options']['IBLOCK_ID'] == '34')? "en":"s1";
+	
+	if($ar_clip[$ids[0]]['PROPERTY_USER_EMAIL_VALUE']){
+		CEvent::SendImmediate("CLIP_READY", $site_id, $arFields);
+	}
+	
+	
+
+	$PROP = array();
+	
+	$paid_clip = $v.'.mp4';
+	$prev_clip = $v.'_preview.mp4';
+	
+	//$paid_clip = (preg_match("/preview/",$v[0]))?$v[1]:$v[0];
+	//$prev_clip = (preg_match("/preview/",$v[0]))?$v[0]:$v[1];
+
+	
+	
+	if (!file_exists($_SERVER['DOCUMENT_ROOT'].'/paid_clip/'.$ids[0].'/')) {
+    	mkdir($_SERVER['DOCUMENT_ROOT'].'/paid_clip/'.$ids[0].'/', 0755, true);
+	}
+	//$old_path = $_SERVER["DOCUMENT_ROOT"].'/upload/clips'.$paid_clip;
+	$old_path = '/home/admin/zakaz/'.$v.'/Video/'.$paid_clip;
+	
+	$file_name = rand(999,9999).'.mp4';
+	$file_path = $_SERVER['DOCUMENT_ROOT'].'/paid_clip/'.$ids[0].'/'.$file_name;
+	copy($old_path,$file_path);
+	$PROP[127] = '/paid_clip/'.$ids[0].'/'.$file_name;
+		
+	
+	if(isset($ar_clip[$ids[0]]['clip_options']['PROPERTY_FREE_PERIOD_VALUE']) && $ar_clip[$ids[0]]['clip_options']['PROPERTY_FREE_PERIOD_VALUE']){
+		$PROP[109] = 5;
+		//$PROP[108] = CFile::MakeFileArray($_SERVER["DOCUMENT_ROOT"].'/upload/clips'.$paid_clip);
+		$PROP[108] = CFile::MakeFileArray('/home/admin/zakaz/'.$v.'/Video/'.$paid_clip);
+	}else{
+		//$PROP[108] = CFile::MakeFileArray($_SERVER["DOCUMENT_ROOT"].'/upload/clips'.$prev_clip);
+		$PROP[108] = CFile::MakeFileArray('/home/admin/zakaz/'.$v.'/Video/'.$prev_clip);
+	}
+	
+
+
+	$PROP[110] = $ar_clip[$ids[0]]['PROPERTY_TYPE_CLIP_VALUE'];
+
+	$PROP[107] = $ar_clip[$ids[0]]['PROPERTY_USER_EMAIL_VALUE'];
+
+	$PROP[106] = $ar_clip[$ids[0]]['PROPERTY_USER_NAME_VALUE'];
+	
+	$PROP[185] = $ar_clip[$ids[0]]['PROPERTY_VIDEO_COUNT_VALUE'];
+	
+	$PROP[209] = $ar_clip[$ids[0]]['PROPERTY_USER_VALUE'];
+
+	$PROP[177] = ($ar_clip[$ids[0]]['PROPERTY_NO_LOGO_VALUE'])?37:0;
+
+	$arLoadProductArray = Array(
+
+ 	 "MODIFIED_BY"    => 1,
+
+ 	 "IBLOCK_SECTION" => false,
+
+ 	 "PROPERTY_VALUES"=> $PROP,
+
+ 	 "ACTIVE"         => "Y",
+	 
+	 "ACTIVE_TO"      => date("d.m.Y H:i:s",time()+3600*24*$day_commerc)
+
+ 	 );
+
+	 
+
+	 $res = $el->Update($ids[0], $arLoadProductArray);
+	 
+
+	 
+
+	
+
+	//unlink($_SERVER["DOCUMENT_ROOT"].'/upload/clips/'.$v[0]);
+	//unlink($_SERVER["DOCUMENT_ROOT"].'/upload/clips/'.$v[1]);
+	
+	echo 'получено';
+
+}
+
+
+
+?>
+
+
+
+
+
+<? require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_after.php"); ?>

@@ -1,0 +1,39 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Видеоинструкция", 
+		"/#menu-instruction", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Создать видео", 
+		"/#menu-choose", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Контакты", 
+		"/#menu-contact", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Стоимость", 
+		"/#menu-pricing", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Новости", 
+		"/#menu-news", 
+		Array(), 
+		Array(), 
+		"" 
+	)
+);
+?>
