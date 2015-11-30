@@ -275,7 +275,7 @@ $renderImage['src'] = "/images/tab-item.jpg";
 					if(empty($cookie_login)){
 						$cookie_login = CUser::GetEmail();
 					}?>
-			  <input style="margin-top: -20px;" id="email_feed" type="text" placeholder="почта" value="<?=$cookie_login;?>">
+			  <input id="email_feed" type="text" placeholder="почта" value="<?=$cookie_login;?>">
 			</div>
 			<div style="text-align: center; font-weight: bold; color: #5d7395;" class="hide_after_order" id="answer"><? if($_SESSION["user_clip_data"] && 1==0):?><?=GetMessage("S_PROCESSING")?><? endif; ?></div>
 			<input type="submit" class="a_order_clip_btn_vk" style="display: none;" value="Отправить" />
