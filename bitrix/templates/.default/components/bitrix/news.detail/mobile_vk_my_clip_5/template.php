@@ -18,17 +18,15 @@ $arFilter = Array(
    "ID"=>$arResult['PROPERTIES']['TYPE_CLIP']['VALUE']
 
    );
-
 $res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter, false, false, array("NAME","PROPERTY_COST","PROPERTY_CURRENCY","PROPERTY_FREE_PERIOD", "PROPERTY_SHOW_OPROS", "PROPERTY_VIDEO_COST", "PROPERTY_FREE_PRICE"));
 
 
 
 $ar_clip = $res->GetNext();
-
-if(empty($ar_clip["PROPERTY_FREE_PERIOD_ENUM_ID"]))
+/*if(empty($ar_clip["PROPERTY_FREE_PERIOD_ENUM_ID"]))
 {
 	LocalRedirect("/clip/buy/?num=".$arResult["ID"]);
-}
+}*/
 
 	//настройки для логотипа.
 $arFilter = Array(
@@ -93,7 +91,7 @@ $mrh_pass1 = "7Qq9hoK9WU";
 $shp_item = 1;
 $culture = $land; 
 $encoding = "utf-8";
-$def_sum = GetMessage("S_MIN_PRICE");
+$def_sum = $ar_clip["~PROPERTY_COST_VALUE"]>0?$ar_clip["~PROPERTY_COST_VALUE"]:GetMessage("S_MIN_PRICE");
 $def_sum2 = 100;
 	$inv_id=0;
 $crc = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1:shpItem=$shp_item"); // HTML-страница с кассой // ROBOKASSA HTML-page
@@ -111,8 +109,42 @@ $image=urlencode('http://fromfoto.com/images/logo2.png');
 ?>
 
 <div class="klip-text" style="margin: 0px auto 25px; width: 100%;">
+	<? if($ar_clip["~PROPERTY_COST_VALUE"]>0):?>
+		<p style="font-size:20px; text-transform: uppercase"><b>скачайте свое видео:</b></p>
+	<? else:?>
 	<p style="font-size:18px; text-transform: uppercase">Поздравляем с отличным клипом! Выбирайте тариф:</p>
+	<? endif;?>
 	<div class="image_box" style="margin-top: 20px; margin-top: 60px">
+		<? if($ar_clip["~PROPERTY_COST_VALUE"]>0):?>
+			<div class="tarif-box special" style="width: 30%">
+				<div class="ttu border-bottom" style="height: 50px; line-height: 50px;letter-spacing: -1px; font-size: 80%"><?=$ar_clip["~NAME"]?></div>
+				<div>
+					<span class="price fg"><?=$ar_clip["~PROPERTY_COST_VALUE"]?></span><span class="fg" style="vertical-align: top;line-height: 38px;">руб.</span>
+				</div>
+				<div style="padding: 0 22px">
+					<div class="border-bottom text" style="text-align: center;     padding: 20px 0;">
+						Хочу сделать подарок. Яркий и оригинальный!
+					</div>
+					<div class="border-bottom icon icon-yes text">
+						Наилучшее качество
+						видео
+					</div>
+					<div class="border-bottom icon icon-yes text">
+						Возможность скачать
+						видео БЕЗ нашего лого
+					</div>
+					<div class="border-bottom icon icon-yes text">
+						Скидка 50% на дизайн
+						из категории "Лучшее"
+					</div>
+					<div class="border-bottom icon icon-yes text">
+						Без логотипа FromFoto
+						и рекламы
+					</div>
+				</div>
+				<a href="javascript::void(0)" class="button-slide button-slide1" style="margin-top: 30px" onclick="doRobo(<?=$def_sum?>,1,'<?=md5("$mrh_login::$inv_id:$mrh_pass1:shpItem=1")?>')">Скачать</a>
+			</div>
+		<? else:?>
 		<div class="tarif-box" style="width: 30%">
 			<div class="ttu border-bottom" style="height: 50px; line-height: 50px;letter-spacing: -1px;">просто так</div>
 			<div>
@@ -185,6 +217,7 @@ $image=urlencode('http://fromfoto.com/images/logo2.png');
 			</div>
 			<a href="javascript:void(0)" onclick="doRobo(<?=$def_sum2?>,2,'<?=md5("$mrh_login::$inv_id:$mrh_pass1:shpItem=2")?>')" class="button-slide button-slide1" style="margin-top: 30px">Скачать</a>
 		</div>
+		<? endif;?>
 	</div>
 	<div class="popup" id="pop2" style="display: none;">
 
