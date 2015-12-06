@@ -38,7 +38,6 @@ $photo_value;
 if($ar_fields = $res->GetNext()){
 	$photo_value = $ar_fields["PROPERTY_PHOTO_VALUE"];
 }
-
 //выбор фотографий для данного клипа
 $arFilter = Array(
    "IBLOCK_ID"=>"31", 
@@ -122,10 +121,11 @@ if (!file_exists($uploaddir)) {
 				<br /><br />
 			</div>
 			<div>
-				<a class="button-slide" href="#" id="go_next" style="width: 310px; text-transform: uppercase; font-size: 12px; height: 35px; line-height: 35px;">
+				<a class="button-slide" href="/fljvrFG/" id="go_next" style="width: 310px; text-transform: uppercase; font-size: 12px; height: 35px; line-height: 35px;">
 					Теперь все правильно, дальше
 				</a>
 			</div>
+			<div style="font-family: arial, sans-serif; font-size: 11px">Нажимая "дальше", Вы принимаете условия <a href="/viewDoc/" target="_blank" style="color:blue">Пользовательского соглашения</a></div>
 		</div>
 	</div>
 </div>
@@ -506,10 +506,7 @@ if (!file_exists($uploaddir)) {
 				setCrop: {cropX:setx,cropY:sety,cropW:new_width_jcrop,cropH:new_height_jcrop},
 				result: {cropX:setx,cropY:sety,cropW:new_width_jcrop,cropH:new_height_jcrop}
     		}).on('cropbox', function(e, data) {
-				num = num-1;		
-				console.log(num);
-			
-			
+				//num = num-1;
 				coords[settings[num][0]][0] = data.cropX;
 
 				coords[settings[num][0]][1] = data.cropW;

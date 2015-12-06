@@ -115,5 +115,17 @@ $GLOBALS['arrFilter'] = array('PROPERTY_USER' => ($user_id)?$user_id:"-1");
 		"AJAX_OPTION_ADDITIONAL" => "N"
 	)
 );?>
+	<div class="add_email_block">
+		<div id="answer" style="color: red"></div>
+		<div id="phrase">
+			<span style="text-transform: uppercase;font-family: 'heliosthinregular'; font-size: 20px">когда ваше видео будет готово, мы отправим его сюда <?=$USER->getEmail()?>, исправьте почту если ошиблись</span>
+		</div>
+		<br>
+		<div class="clips_email mail">
+			<input type="text" value="<?=$USER->getEmail()?>" placeholder="ваша@почта.ru" class="email_feed">
+			<input type="submit" value="отправить" class="button-slide add_email">
+		</div>
+		<div style="clear: both;"></div>
+	</div>
 <? endif; ?>
  <? require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php"); ?>

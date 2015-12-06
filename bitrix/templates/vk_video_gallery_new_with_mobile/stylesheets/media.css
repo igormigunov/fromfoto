@@ -1443,7 +1443,11 @@ footer .copyright {
   .slide-table .slide-video-img:active {
     background: #6e8ab5;
   }
-
+  .button-slide.new-style{
+  font-family:'heliosthinregular';
+  font-size: 17.26px;
+  text-transform:uppercase;
+}
   .ui-sortable-handle img {
     height: 130px;
   }
@@ -1578,7 +1582,7 @@ footer .copyright {
     width: auto;
     text-align: center;
   }
-  .slide-table .slide-video-img, .slide-table .slide-video-img.no_res {
+  .slide-table .slide-video-img, .slide-table .slide-video-img.no_res,.slide-video-img.no_res.single-button {
     width: auto;
     display: inline-block !important;
     float: none;

@@ -3,7 +3,7 @@
 <? require_once($_SERVER["DOCUMENT_ROOT"]."/ajax/yadisk.php");?>
 <? require_once($_SERVER["DOCUMENT_ROOT"]."/ajax/common_data.php");?>
 <?
-global $USER;
+
 $user = new CUser;
 $rsUser = CUser::GetByLogin($_POST['email_vk']);
 if($arUser = $rsUser->Fetch()){
@@ -103,6 +103,13 @@ if(!$errors){
 
 			);
 		CEvent::SendImmediate("ORDER_CLIP", "s1", $arFields);
+
+		helpertools::add2Statistics(array(
+			"IP"=>$_POST["user_ip"],
+			"EMAIL"=>$_POST['email_vk'],
+			"USER"=>$user_id,
+			"LOGIN"=>$_REQUEST['email_vk']
+		));
 		echo "1";
 
 	}

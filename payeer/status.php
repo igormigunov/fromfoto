@@ -28,14 +28,19 @@ $arFilter = Array(
    );
 $res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter, false, false, array("NAME","ID","PROPERTY_TYPE_CLIP","PROPERTY_USER_EMAIL","PROPERTY_USER_NAME","PROPERTY_PAID", "PROPERTY_USER", "PROPERTY_VIDEO","PROPERTY_FILE_LINK","PROPERTY_TELL_FRIENDS","PROPERTY_YOUTUBE"));
 $clip = $res->GetNext();
-
+if ($shp_item == 10){
+	$itemID=intval($_REQUEST["InvId"]);
+	helpertools::unBlockUser(array("ID"=>$itemID));
+	echo "OK$inv_id";
+	exit();
+}
 if ($shp_item == 7)
 {
 	$_REQUEST["InvId"] = intval($_REQUEST["InvId"])/1000;
 	$arFilter = Array(
-	   "IBLOCK_TYPE"=>"clips", 
-	  "ACTIVE"=>"Y", 
-	  "ID"=>intval($_REQUEST["InvId"])
+	    "IBLOCK_TYPE"=>"clips",
+	    "ACTIVE"=>"Y",
+	    "ID"=>intval($_REQUEST["InvId"])
 	   );
 	   
 	   

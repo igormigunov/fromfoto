@@ -87,17 +87,17 @@ $out_summ = number_format(preg_replace("/\s/","","444"), 2, '.', '');
 
 $inv_desc = base64_encode(GetMessage("S_PAYMENT").$arResult["ID"]);
 $m_key = S_KEY;
-
 // регистрационная информация (логин, пароль #1) // registration info (login, password #1) 
 $mrh_login = "fromfoto"; 
 $mrh_pass1 = "7Qq9hoK9WU"; 
-$shp_item = 1; 
+$shp_item = 1;
 $culture = $land; 
 $encoding = "utf-8";
 $def_sum = GetMessage("S_MIN_PRICE");
-
+$def_sum2 = 100;
+	$inv_id=0;
 $crc = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1:shpItem=$shp_item"); // HTML-страница с кассой // ROBOKASSA HTML-page
-$crc  = md5("$mrh_login::$inv_id:$mrh_pass1:shpItem=$shp_item"); 
+$crc  = md5("$mrh_login::$inv_id:$mrh_pass1:shpItem=$shp_item");
 
  ?>
  <?
@@ -110,10 +110,95 @@ $summary=urlencode(prepare_row(GetMessage("S_DESCRIPTION")));
 $image=urlencode('http://fromfoto.com/images/logo2.png');
 ?>
 
-<div class="klip-text" style="margin: 0px auto 25px;">
-	<p>Если Вам всё понравилось - заберите клип на свою страничку (БЕСПЛАТНО)</p>
-	<a class="button-slide button-slide1" style="display: inline-block;" onClick="window.open('https://<?=change_share_mobile(); ?>/share.php?url=<?php echo $url; ?>&title=<?php echo $title; ?>','sharer','toolbar=0,status=0,width=548,height=325');" href="javascript: void(0)" >забрать себе вконтакте</a>
-	<a class="button-slide button-slide1" style="display: inline-block;" onClick="window.open('http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=<?=$url;?>','sharer','toolbar=0,status=0,width=548,height=325'); return false; "  href="javascript: void(0)">забрать себе в одноклассники</a>
+<div class="klip-text" style="margin: 0px auto 25px; width: 100%;">
+	<p style="font-size:18px; text-transform: uppercase">Поздравляем с отличным клипом! Выбирайте тариф:</p>
+	<div class="image_box" style="margin-top: 20px; margin-top: 60px">
+		<div class="tarif-box" style="width: 30%">
+			<div class="ttu border-bottom" style="height: 50px; line-height: 50px;letter-spacing: -1px;">просто так</div>
+			<div>
+				<span class="price fg">0</span><span class="fg" style="vertical-align: top;line-height: 38px;">руб.</span>
+			</div>
+			<div style="padding: 0 22px">
+				<div class="border-bottom text" style="text-align: center;     padding: 20px 0;">
+					Забрать видео на мою страничку в соцсеть.
+				</div>
+				<div class="border-bottom icon icon-yes text">
+					Среднее качество
+				</div>
+				<div class="border-bottom icon icon-no text">
+					Скачать видео
+				</div>
+				<div class="border-bottom icon icon-no text">
+					Скидка 50% на следующий заказ!
+				</div>
+				<div class="border-bottom icon icon-no text">
+					Без логотипа FromFoto
+				</div>
+			</div>
+			<a href="javascript::void(0)" class="button-slide button-slide1" style="margin-top: 30px" onclick="$('#pop2').show()">Забрать в соцсеть</a>
+		</div>
+		<div class="tarif-box special" style="width: 30%">
+			<div class="ttu border-bottom" style="height: 50px; line-height: 50px;letter-spacing: -1px;">важное событие</div>
+			<div>
+				<span class="price fg">300</span><span class="fg" style="vertical-align: top;line-height: 38px;">руб.</span>
+			</div>
+			<div style="padding: 0 22px">
+				<div class="border-bottom text" style="text-align: center;     padding: 20px 0;">
+					Хочу сделать подарок. Яркий и оригинальный!
+				</div>
+				<div class="border-bottom icon icon-yes text">
+					Отличное качество (HD)
+				</div>
+				<div class="border-bottom icon icon-yes text">
+					Скачать видео
+				</div>
+				<div class="border-bottom icon icon-yes text">
+					Скидка 50% на следующий заказ!
+				</div>
+				<div class="border-bottom icon icon-yes text">
+					Без логотипа FromFoto
+				</div>
+			</div>
+			<a href="javascript:void(0)" onclick="doRobo(<?=$def_sum?>,1,'<?=md5("$mrh_login::$inv_id:$mrh_pass1:shpItem=1")?>')" class="button-slide button-slide1"  style="margin-top: 30px">Скачать</a>
+		</div>
+		<div class="tarif-box" style="width: 30%">
+			<div class="ttu border-bottom" style="height: 50px; line-height: 50px;letter-spacing: -1px;">порадовать</div>
+			<div>
+				<span class="price fg">100</span><span class="fg" style="vertical-align: top;line-height: 38px;">руб.</span>
+			</div>
+			<div style="padding: 0 22px">
+				<div class="border-bottom text" style="text-align: center;     padding: 20px 0;">
+					Порадую себя или кого-то из близких :)
+				</div>
+				<div class="border-bottom icon icon-yes text">
+					Среднее качество
+				</div>
+				<div class="border-bottom icon icon-yes text">
+					Скачать видео
+				</div>
+				<div class="border-bottom icon icon-no text">
+					Скидка 50% на следующий заказ!
+				</div>
+				<div class="border-bottom icon icon-no text">
+					Без логотипа FromFoto
+				</div>
+			</div>
+			<a href="javascript:void(0)" onclick="doRobo(<?=$def_sum2?>,2,'<?=md5("$mrh_login::$inv_id:$mrh_pass1:shpItem=2")?>')" class="button-slide button-slide1" style="margin-top: 30px">Скачать</a>
+		</div>
+	</div>
+	<div class="popup" id="pop2" style="display: none;">
+
+		<div class="popup-container with_border" style="margin: -160px auto 0; top: 50%;">
+			<a href="javascript:void(0)" id="vs_close_btn" onclick="$('#pop2').hide()">&nbsp;</a>
+			<div class="content-title bold-title lh-0">
+				выберите свою социальную сеть
+			</div>
+			<div class="content-title bold-title lh-0" style="display: table;width: 77%; margin-left: 12% !important">
+				<div style="display: table-cell; text-align: center"><a href="javascript:void(0)" class="box-button vk a_order_clip_btn_vk_1" onClick="window.open('https://<?=change_share_mobile(); ?>/share.php?url=<?php echo $url; ?>&title=<?php echo $title; ?>','sharer','toolbar=0,status=0,width=548,height=325');">&nbsp;</a></div>
+				<div style="display: table-cell;text-align: center"><a href="javascript:void(0)" class="box-button ok a_order_clip_btn_ok_1" onClick="window.open('http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=<?=$url;?>','sharer','toolbar=0,status=0,width=548,height=325'); return false; ">&nbsp;</a></div>
+			</div>
+		</div>
+	</div>
 </div>
  <div class="klip-text" style="margin: 0px auto 25px;">
  <form action='https://auth.robokassa.ru/Merchant/Index.aspx' method="POST" style="display: none;" id="PayForm">
@@ -121,8 +206,8 @@ $image=urlencode('http://fromfoto.com/images/logo2.png');
 	<input type="hidden" name="FreeOutSum" value="<?=$def_sum?>" id="DefaultSum" />
 	<input type="hidden" name="InvoiceID" value="<?=$inv_id?>" />
 	<input type="hidden" name="Description" value="<?=$inv_desc?>" />
-	<input type="hidden" name="SignatureValue" value="<?=$crc?>" />
-	<input type="hidden" name="shpItem" value="<?=$shp_item?>" />
+	<input type="hidden" name="SignatureValue" value="<?=$crc?>" id="SignatureValue" />
+	<input type="hidden" name="shpItem" value="<?=$shp_item?>" id="shpItem" />
 	<input type="hidden" name="Culture" value="<?=$culture?>" />
 	<input type="hidden" name="Encoding" value="<?=$encoding?>" />
 	<input type="submit" value="Оплаить" style="display: none;" id="PauSubmit"/>
@@ -144,7 +229,7 @@ $image=urlencode('http://fromfoto.com/images/logo2.png');
  <? else: ?>
  <div class="klip-text">
 	<div class="klip-text-title"><?=GetMessage("S_TITLE4")?></div>
-</div>
+</div> <!-- /ajax/getFile.php?FILE= -->
 <div class="video-done">
 	<a onclick="yaCounter25315490.reachGoal('buy');" download class="btn_go create_new 1 button-slide" target="_blank" href="<?=$arResult['PROPERTIES']['FILE_LINK']['VALUE'];?>"><?=GetMessage("S_DOWNLOAD");?></a>
 </div>
@@ -162,19 +247,6 @@ $image=urlencode('http://fromfoto.com/images/logo2.png');
 
  
 <script>
-$('.change_price').keyup(function(e) {
-	var new_price = parseInt('<?=GetMessage("S_MIN_PRICE")?>')+parseInt('<?=$no_logo_cost;?>');
-	if(parseInt($(this).val()) > (parseInt('<?=GetMessage("S_MIN_PRICE")?>')+parseInt('<?=$no_logo_cost;?>'))){
-		new_price = parseInt($(this).val());
-	}
-	//$(this).val(new_price);
-	$(this).html(new_price);
-	$('.html_form').html('<iframe src="/ajax/change_price_btn.php?new_price='+new_price+'&m_curr=<?=$m_curr;?>&inv_desc=<?=$inv_desc;?>&inv_id=<?=$inv_id;?>&land=<?=$land;?>" frameborder="0" scrolling="no" width="190" height="95"></iframe>');
-	
-	//$.post('/ajax/change_price_btn.php',{new_price:new_price,m_curr:'<?=$m_curr;?>',inv_desc:'<?=$inv_desc;?>',inv_id:'<?=$inv_id;?>',land:'<?=$land;?>'},function(data){
-		
-	//});
-});
 $('.tell_friends').click(function(){
 	var clips = 0;
 		clips = <?=$arResult["ID"]; ?>;
@@ -182,10 +254,12 @@ $('.tell_friends').click(function(){
 		window.location = window.location.href;
 	});
 });
-$('#PayRobokassa').click(function(e){
-	e.preventDefault();
+function doRobo($summ,shpItem,SignatureValue){
+	$('#DefaultSum').val($summ)
+	$('#shpItem').val(shpItem)
+	$('#SignatureValue').val(SignatureValue)
 	$("#PayForm").submit();
-});
+}
 
 </script>
 <style>
@@ -193,7 +267,7 @@ $('#PayRobokassa').click(function(e){
 		display: inline-block;
 		height: 35px;
 		line-height: 35px;
-		min-width: 170px;
+		min-width: 50px;
 		padding: 0 25px;
 	}
 </style>

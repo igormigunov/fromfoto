@@ -4,6 +4,7 @@
     if(empty($arParams["CHEKCODE"])){
     	$arParams["CHEKCODE"] = '0';
     }
+$link=$USER->IsAuthorized()?"/fljvrFG/":"#";
 ?>
 <div class="popup" style="display: none;">
   <div class="popup-container with_border" style="margin: -50px auto 0; top: 50%;"> <a href="/" class="cross"></a>
@@ -15,9 +16,9 @@
 </div>
 <script>
 	if($( window ).width() <= 480){
-		$('header menu').html('<li><a id="bxid_642578" class="my_clip_show_auth" href="#" ><span>мой клип</span></a></li>');
+		$('header menu').html('<li><a id="bxid_642578" class="my_clip_show_auth" href="<?=$link?>" ><span>мой клип</span></a></li>');
 	}else{
-		$('header menu').prepend('<li><a id="bxid_642578" class="my_clip_show_auth" href="#" ><span>мой клип</span></a></li>');
+		$('header menu').prepend('<li><a id="bxid_642578" class="my_clip_show_auth" href="<?=$link?>" ><span>мой клип</span></a></li>');
 	}
 	$('.popup .cross').click(function(e){
 		e.preventDefault();

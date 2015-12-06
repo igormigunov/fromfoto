@@ -264,11 +264,33 @@ $renderImage['src'] = "/images/tab-item.jpg";
  	<?endforeach;?>
 <?endif;?>
 <?endif;?>
+		<?
+		$arFilter = Array(
+
+			"IBLOCK_TYPE"=>"clips",
+
+			"IBLOCK_ID"=>"35",
+
+			"ACTIVE"=>"Y",
+
+			"PROPERTY_IP"=>$_SERVER["REMOTE_ADDR"]
+
+		);
+
+		$res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter, false, false, array("NAME","ID","PROPERTY_BLOCK_FOR"));
+		$stat = $res->GetNext();
+		$_plural_days = array(GetMessage("S_DAY"), GetMessage("S_DAYS"), GetMessage("S_DAYS1"));
+		$day = round((strtotime($stat['PROPERTY_BLOCK_FOR_VALUE'])-time())/(3600*24));
+		?>
 		<? if(((isset($_COOKIE['FREE_LIMIT']) && $_COOKIE['FREE_LIMIT'] >= 2 && $arResult['PROPERTIES']['FREE_PERIOD']['VALUE']) || (isset($_COOKIE['PAID_LIMIT']) && $_COOKIE['PAID_LIMIT'] >=2 && !$arResult['PROPERTIES']['FREE_PERIOD']['VALUE'])) && !$_REQUEST['test_f']): ?>
 			<h2 class="blue" style="text-align:center">
 				<?=GetMessage("S_LIMIT")?>
 			</h2>
-		<? else: ?>
+		<? elseif(isset($stat['PROPERTY_BLOCK_FOR_VALUE']) && $stat['PROPERTY_BLOCK_FOR_VALUE'] && time() < strtotime($stat['PROPERTY_BLOCK_FOR_VALUE'])): ?>
+			<h2 class="blue" style="text-align:center">
+				<?=sprintf(GetMessage("S_STOP_LIST"),$day.' '.$_plural_days[plural_type($day)]);?>
+			</h2>
+			<? else:?>
 			<div class="mail">
 			  <span style="line-height: 1.4; margin-bottom: 28px;"><?=GetMessage("FF_FROM_EMAIL")?></span> 
 			  <?$cookie_login = $_SESSION['VK_EMAIL'];
@@ -530,10 +552,13 @@ if($_COOKIE['UPLOAD_FILES']){
 		<? if($USER->IsAuthorized() && preg_match("/OKuser/i", $USER->GetLogin())):?>
 			window.open('http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=<?=urlencode('http://fromfoto.com/repost/'.rand(9999999, 99999999).'/');?>','sharer','toolbar=0,status=0,width=548,height=325');
 		<? else: ?>
-			window.open('https://<?=change_share_mobile(); ?>/share.php?url=<?php echo $url; ?>&title=<?php echo $title; ?>&description=<?php echo $summary; ?>&image=<?php echo $image; ?>','sharer','toolbar=0,status=0,width=548,height=325');
+		$.getJSON('http://vkontakte.ru/share.php?act=count&index=1&url=<?php echo $url; ?>>&title=<?php echo $title; ?>&description=<?php echo $summary; ?>&image=<?php echo $image; ?>&callback=?', function(response) {
+			console.log(response)
+		});
+			//window.open('https://<?=change_share_mobile(); ?>/share.php?url=<?php echo $url; ?>&title=<?php echo $title; ?>&description=<?php echo $summary; ?>&image=<?php echo $image; ?>','sharer','toolbar=0,status=0,width=548,height=325');
 		<? endif; ?>
 		$('.wait').html('<span class="ready-klip normal big-kl">Подождите, пожалуйста. Ваш клип обрабатывается.</span><img style="height: 40px;" src="<?=SITE_TEMPLATE_PATH?>/images/preload.gif" />');
-		send_clip('zakaz');
+		//send_clip('zakaz');
 	});
 	
 	
@@ -568,7 +593,8 @@ if($_COOKIE['UPLOAD_FILES']){
 				video_id:'<?=$_REQUEST['video_id'];?>', 
 				email_vk:$("#email_feed").val(), 
 				maket:'<?=trim($arResult['PROPERTIES']['NAME_AE']['VALUE']);?>', 
-				section_text_id:"<?=$arResult['PROPERTIES']['TEXTS']['VALUE']; ?>"
+				section_text_id:"<?=$arResult['PROPERTIES']['TEXTS']['VALUE']; ?>",
+				user_ip:'<?=$_SERVER["REMOTE_ADDR"] ?>'
 			}, function(data){
 
 			if(data == 1){
@@ -607,6 +633,7 @@ if($_COOKIE['UPLOAD_FILES']){
 					email_vk:$("#email_feed").val(), 
 					make_dir : _make_dir,
 					add_misst : 1,
+
 				}, function(data){
 					$.post("<?=SITE_DIR?>ajax/add_order_cookie.php",
 					{},

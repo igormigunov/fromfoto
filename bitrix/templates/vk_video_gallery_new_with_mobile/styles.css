@@ -37,7 +37,7 @@
 	}
 }
 
-.slide-table .slide-video-img.no_res {
+.slide-table .slide-video-img.no_res,.slide-video-img.no_res.single-button {
 	width: auto;
 	display: inline-block !important;
 	float: right;
@@ -55,7 +55,9 @@
 	background-image: -webkit-linear-gradient(top, #7588a5, #5d7395);
 	background-image: linear-gradient(to bottom, #7588a5, #5d7395);
 }
-  
+.slide-video-img.no_res.single-button{
+	float: none;
+}
 #videoslider{
 	width: 90%;
 	height: 128px;
@@ -175,8 +177,8 @@
 }
 #vs_close_btn{
 	position: absolute;
-	right: -40px;
-	top: -40px;
+	right: -13px;
+	top: -13px;
 	width: 24px;
 	height: 24px;
 	font-size: 36px;
@@ -184,7 +186,8 @@
 	font-weight: bold;
 	text-align: center;
 	background-color: #83B8E6;
-	background-image: url('images/close_btn.png');
+	background-image: url('images/close_btn_new.png');
+	background-size: contain;
 	line-height: 0.65em;
 	border-radius: 100%;
 	cursor: pointer;
@@ -311,4 +314,105 @@
 	#main_background{
 		margin-bottom: 0px;
 	}
+}
+.box-button{
+	display:inline-block;
+	width: 100px;
+	height: 100px;
+	border:2px solid #7388a7;
+	background-size: 40%;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.box-button.vk{
+	background-image: url(images/vk_btn_1.png);
+}
+.box-button.ok{
+	background-image: url(images/ok_btn_1.png);
+}
+.image_box img{
+	width:192px;
+}
+.ttu{
+	text-transform: uppercase !important;
+}
+.fdays{
+	font-family: 'One_Days';
+	font-size: 11px;
+}
+.redd{
+	color:#be3a3a;
+}
+.tarif-box{
+	font-family: 'One_Days';
+	text-align: center;
+	font-size: 18px;
+	border-color: #cbcbcb;
+	border-width: 2px;
+	border-style: solid;
+	display: inline-block;
+	border-radius: 4px;
+	background-color: #fdfdfd;
+}
+.tarif-box.special{
+	background-color: #e9ecf0;
+	position: relative;
+}
+.tarif-box.special:before{
+	content: " ";
+	position: absolute;
+	top: -49px;
+	background-image: url('images/extended .png');
+	left: -8px;
+	right: -6px;
+	height: 54px;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+.tarif-box.special .button-slide {
+
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a4b577), color-stop(100%, #7d9d2f));
+	background-image: -moz-linear-gradient(top, #a4b577, #7d9d2f);
+	background-image: -webkit-linear-gradient(top, #a4b577, #7d9d2f);
+	background-image: linear-gradient(to bottom, #a4b577, #7d9d2f);
+}
+.tarif-box.special .button-slide:hover{
+	background: #7d9d2f;
+}
+.tarif-box .border-bottom{
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: #cbcbcb;
+}
+.tarif-box .fg{
+	font-family: Georgia;
+	font-weight: bold;
+}
+.tarif-box .icon{
+	position: relative;
+}
+.tarif-box .icon:after{
+	content: " ";
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 20px;
+	height: 20px;
+	margin-top: -10px;
+	background-image: url(images/icon-yes.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+.tarif-box .icon.icon-no:after{
+	background-image: url(images/icon-no.png);
+}
+ .price{
+	font-size: 350%;
+	line-height: 75%;
+}
+.tarif-box .text{
+	font-size: 74%;
+	letter-spacing: -1px;
+	text-align: left;
+	padding: 5px 0;
 }

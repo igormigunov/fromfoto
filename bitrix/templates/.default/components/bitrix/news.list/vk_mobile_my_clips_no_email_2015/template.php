@@ -10,7 +10,8 @@ $arFilter = Array(
 $res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter);
 $ar_data = $res->GetNext();
 $title1=urlencode($ar_data['NAME']);
-$url1=urlencode('http://fromfoto.com/');
+global $USER;
+$url1=urlencode('http://fromfoto.com/?uid='.$USER->getID());
 $summary1=urlencode(prepare_row($ar_data['PREVIEW_TEXT'])); 
 $image1=urlencode('http://fromfoto.com'.CFile::GetPath($ar_data['PREVIEW_PICTURE']));
 
@@ -24,7 +25,7 @@ $arFilter = Array(
 $res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter);
 $ar_data = $res->GetNext();
 $title=urlencode($ar_data['NAME']);
-$url=urlencode('http://fromfoto.com/');
+$url=urlencode('http://fromfoto.com/?uid='.$USER->getID());
 $summary=urlencode(prepare_row($ar_data['PREVIEW_TEXT'])); 
 $image=urlencode('http://fromfoto.com'.CFile::GetPath($ar_data['PREVIEW_PICTURE']));
 
@@ -87,19 +88,19 @@ while($ar_fields = $res->GetNext())
 		$start_time = (strtotime($arItem['DATE_CREATE'])+$time_nt)-time();
 	}else{
 		if($arItem['PROPERTIES']['TELL_FRIENDS']['VALUE']){
-			$create_time = 35;
+			$create_time = 60;
 		}
 		if($arItem['PROPERTIES']['PAID']['VALUE']){
 			$create_time = 5;
 		}
-		
+		$plus_24=3600; /* Время в инфоблоках на час больше серверного. Хотфикс!!!Костыль!!!! */
 		$start_time = (strtotime($arItem['DATE_CREATE'])+$order*$create_time*60 + $plus_24)-time();
 	}
 	$start_time = ($start_time>0)?$start_time:false;
 	if($start_time && $start_time>24*3600){
 		$start_time = 24*3600 - 1;
 	}
-	
+
 	$wait_zakaz = file_exists("/home/admin/wait_zakaz/".$arItem['ID']."_33/");
 	?>
 	<? if($wait_zakaz):?>
@@ -144,10 +145,16 @@ while($ar_fields = $res->GetNext())
 					<div class="digit">0</div>
 				</div>
 				<? if(empty($arItem['PROPERTIES']['TELL_FRIENDS']['VALUE'])):?>
-					<p><a href="<?echo(str_replace("clip/?num", "clip/fast/?num", $arItem['DETAIL_PAGE_URL']));?>" class="button-change button-more-speed">Ускорить создание видео</a></p>
-				<? endif; ?>			
+					<a _ID="<?=$arItem['ID'];?>"  onclick="yaCounter25315490.reachGoal('repost1');openpopup1($(this))" class="button-slide button-tab" style="height: 30px; line-height: 30px; margin-right: 10px; min-width: 150px; display: inline-block; font-size: 10px;" href="#" data-href="<?echo(str_replace("clip/?num", "clip/fast/?num", $arItem['DETAIL_PAGE_URL']));?>">Ускорить создание видео</a>
+				<? endif; ?>
 			</div>
 			<script>
+				function openpopup1($el){
+					$('#paybtn').attr('href',$el.data('href'))
+					$('#sharebtn_1').attr('_ID',$el.attr("_ID"))
+					$('#sharebtn_2').attr('_ID',$el.attr("_ID"))
+					$('#pop1').show()
+				}
 				<?
 					$hour = floor($start_time/3600);
 					$min = floor(($start_time - $hour*3600)/60);
@@ -196,13 +203,11 @@ while($ar_fields = $res->GetNext())
 				<span>ЗДЕСЬ БУДЕТ ВАШЕ ВИДЕО</span>
 			</a>
 		<? else: ?>
-			<a class="slide-video-img no_res to_url" href="#" target="_blank" to_url="
-		<? if($type_clips[$arItem['PROPERTIES']['TYPE_CLIP']['VALUE']]['PROPERTY_FREE_PERIOD_ENUM_ID'] != "6"): ?>
+			<a class="slide-video-img no_res" href="<? if($type_clips[$arItem['PROPERTIES']['TYPE_CLIP']['VALUE']]['PROPERTY_FREE_PERIOD_ENUM_ID'] != "6"): ?>
 			<?echo(str_replace("clip/?num", "clip/buy/?num", $arItem['DETAIL_PAGE_URL']));?>
 		<? else: ?>
 			<?=$arItem['DETAIL_PAGE_URL'];?>
-		<? endif; ?>
-				">
+		<? endif; ?>" target="_blank">
 					<span class="slide-video-button"><?=GetMessage("S_LOOK_READY");?></span>
 				</a>
 		<? endif; ?>
@@ -226,7 +231,7 @@ while($ar_fields = $res->GetNext())
 	</p>
 	
 <? elseif($start_time>0 || empty($arItem['PROPERTIES']['FILE_LINK']['VALUE'])):?>
-<div class="add_email_block">
+<!--div class="add_email_block">
 	<div class="attention">
 		<?=GetMessage("S_ATTENTION");?>
 	</div>
@@ -234,7 +239,7 @@ while($ar_fields = $res->GetNext())
 	<p style="text-align: center;">
 		<a _ID="<?=$arItem['ID'];?>"  onclick="yaCounter25315490.reachGoal('repost1');" class="button-slide a_order_clip_btn_vk_1" style="height: 30px; line-height: 30px; margin-right: 10px; min-width: 150px; display: inline-block; font-size: 10px;" href="#">СДЕЛАТЬ РЕПОСТ</a>
 	</p>
-</div>
+</div-->
 <? endif; ?>
 <hr align="center" size="1" color="#efefef" />
 <? endforeach; ?>
@@ -255,7 +260,7 @@ while($ar_fields = $res->GetNext())
 
 
 
-<div class="popup" style="display: none;">
+<!--div class="popup" style="display: none;">
 	<div class="popup-container with_border" style="margin: -160px auto 0; top: 50%;">
 		<div class="content-title bold-title">
 			Поздравляем с режиссерским дебютом и отличным клипом!
@@ -269,16 +274,85 @@ while($ar_fields = $res->GetNext())
 			Им будет полезно, а нам приятно :)
 		</span>
 	</div>
+</div-->
+<div class="popup" id="pop1" style="display: none;">
+
+	<div class="popup-container with_border" style="margin: -160px auto 0; top: 50%;">
+		<a href="javascript:void(0)" id="vs_close_btn" onclick="$('#pop1').hide()">&nbsp;</a>
+		<div class="content-title bold-title lh-0">
+			<br>сделайте репост и получите свое видео через 1 час<br>
+			<a  onclick="yaCounter25315490.reachGoal('repost3');$('#pop2').show()" class=" button-slide button-tab" style="padding: 0px 10px;" href="#"><span class="slide-video-button new-style">сделать репост</span></a>
+		</div>
+		<div class="content-title bold-title lh-0">
+			если вас нет в соц. сетях или не хотите делать репост
+			оплатите 100р. и получите свое видео через 1 час <br>
+			<a id="paybtn" class="button-slide button-tab" style="padding: 0px 10px;" href="javascript:void(0)"><span class="slide-video-button new-style">оплатить</span></a>
+		</div>
+	</div>
+</div>
+<div class="popup" id="pop2" style="display: none;">
+
+	<div class="popup-container with_border" style="margin: -160px auto 0; top: 50%;">
+		<a href="javascript:void(0)" id="vs_close_btn" onclick="$('#pop2').hide()">&nbsp;</a>
+		<div class="content-title bold-title lh-0">
+			выберите свою социальную сеть
+		</div>
+		<div class="content-title bold-title lh-0" style="display: table;width: 77%; margin-left: 12% !important">
+			<div style="display: table-cell; text-align: center"><a id="sharebtn_1" href="javascript:void(0)" class="box-button vk a_order_clip_btn_vk_1">&nbsp;</a></div>
+			<div style="display: table-cell;text-align: center"><a id="sharebtn_2" href="javascript:void(0)" class="box-button ok a_order_clip_btn_ok_1">&nbsp;</a></div>
+		</div>
+	</div>
 </div>
 <script>
+	var ShareVKCount=-1;
+	var ShareVKCountStart=-1
+	var ShareOKCount=-1;
+	var ShareOKCountStart=-1
+	var jqxhr
+	var VK = {
+		Share: {
+			count: function(value, count) {
+				ShareVKCount=count
+				if(ShareVKCountStart<0)ShareVKCountStart=ShareVKCount
+			}
+		}
+	};
+
+	function getVKShareCount($id){
+		jqxhr=$.getJSON('http://vk.com/share.php?act=count&index=1&url=<?php echo $url; ?>&callback=?');
+		jqxhr.complete(function() {
+			if(ShareVKCount>ShareVKCountStart && $id>0){
+				$.post("/ajax/goshare.php","share_id="+$id+"&shareKey=<?=helpertools::getShareKey($USER->getID())?>",function(data){
+					if(data.MESSAGE=="ok"){
+						window.location.reload()
+					}else{
+						alert(data.MESSAGE)
+					}
+				},'json')
+			}
+		});
+	}
+	function getOKShareCount($id){
+	if($id>0) {
+		$.post("/ajax/goshare.php", "share_id=" + $id + "&shareKey=<?=helpertools::getShareKey($USER->getID())?>", function (data) {
+			if (data.MESSAGE == "ok") {
+				window.location.reload()
+			} else {
+				alert(data.MESSAGE)
+			}
+		}, 'json')
+	}
+	}
+	getVKShareCount()
+	//getOKShareCount()
 	$('.to_url').click(function(e){
 		e.preventDefault();
 		_this = $(this);
 		<? if(is_mobile()): ?>
 			window.location = $.trim(_this.attr('to_url'));
 		<? else: ?>
-			$('.popup').show();
-			setTimeout(function(){window.location = $.trim(_this.attr('to_url'));}, 11*1000);
+			$('#pop1').show();
+			//setTimeout(function(){window.location = $.trim(_this.attr('to_url'));}, 11*1000);
 		<? endif; ?>
 	});
 	$('.a_order_clip_btn_vk').click(function(e){
@@ -292,13 +366,41 @@ while($ar_fields = $res->GetNext())
 	});
 	$('.a_order_clip_btn_vk_1').click(function(e){
 		e.preventDefault();
+		var $win;
+		var $share_id=$(this).attr("_id")
 		<? if($USER->IsAuthorized() && preg_match("/OKuser/i", $USER->GetLogin())):?>
 			window.open('http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=<?=urlencode('http://fromfoto.com/1repost/'.rand(9999999, 99999999).'/');?>','sharer','toolbar=0,status=0,width=548,height=325');
 		<? else: ?>
-			window.open('https://<?=change_share_mobile(); ?>/share.php?url=<?php echo $url; ?>&title=<?php echo $title; ?>&description=<?php echo $summary; ?>&image=<?php echo $image; ?>','sharer','toolbar=0,status=0,width=548,height=325');
+		getVKShareCount($share_id)
+		$win=window.open('https://<?=change_share_mobile(); ?>/share.php?url=<?php echo $url; ?>&title=<?php echo $title; ?>&description=<?php echo $summary; ?>&image=<?php echo $image; ?>','sharer','toolbar=0,status=0,width=548,height=325');
+		var timer = setInterval(checkChild, 500);
+
+		function checkChild() {
+			if ($win.closed) {
+				getVKShareCount($share_id)
+				clearInterval(timer);
+			}
+		}
 		<? endif; ?>
 		$('#colorbox').hide();
 	});
+	$('.a_order_clip_btn_ok_1').click(function(e){
+		e.preventDefault();
+		var $win2;
+		var $share_id=$(this).attr("_id")
+		getOKShareCount($share_id)
+		$win2=window.open('http://www.ok.ru/dk?st.cmd=addShare&st.s=1&st._surl=<?php echo $url; ?>','sharer','toolbar=0,status=0,width=548,height=325');
+		var timer2 = setInterval(checkChildOk, 500);
+		function checkChildOk() {
+			if ($win2.closed) {
+				getOKShareCount($share_id)
+				clearInterval(timer2);
+			}
+		}
+
+		$('#colorbox').hide();
+	});
+
 	$('a.copy_clip').click(function(e){
 		e.preventDefault();
 		
@@ -309,7 +411,7 @@ while($ar_fields = $res->GetNext())
 	});
 	$('.popup .cross').click(function(e){
 		e.preventDefault();
-		$('.popup').hide();
+		$('#pop1').hide();
 	});
 	var timer_reload = setInterval(function() { window.location = window.location.href; }, 300*1000);
 </script>

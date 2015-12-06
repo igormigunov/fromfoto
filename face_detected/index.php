@@ -2,8 +2,9 @@
 <?
 CModule::IncludeModule("iblock");
 
-$id = explode("_",$_REQUEST["zakaz1"]);
-$clip_id = $id[0];
+/*$id = explode("_",$_REQUEST["zakaz1"]);
+$clip_id = $id[0];*/
+$clip_id=$_REQUEST["zakaz1"];
 if(!$clip_id){
 	exit("1");
 }

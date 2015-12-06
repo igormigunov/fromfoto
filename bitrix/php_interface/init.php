@@ -209,6 +209,7 @@ function sendClipReadyAgent()
 				$TYPE_ORD = ($row['PROPERTY_PAID_VALUE']) ? "BEST_CLIP_READY":"CLIP_READY";
 				if($arUser['EMAIL']){
 					CEvent::SendImmediate($TYPE_ORD, $site_id, $arFields);
+
 				}
 			}
 		}
@@ -236,6 +237,68 @@ function is_mobile(){
 	$detect = new Mobile_Detect;
 	return $detect->isMobile();
 }
+class helpertools
+{
+	static $salt="fromfoto.com|salt|123";
+	public static function getShareKey($id){
+		return md5(static::$salt."|".$id);
+	}
+	public static function add2Statistics($params) /* Метод для изменения/добаления данных в статистику по заказам.*/
+	{
+		if (!CModule::IncludeModule("iblock")) die();
+		$arLoadProductArray = Array(
+			"IBLOCK_ID" => 35,
+			"ACTIVE" => "Y",
+			"NAME" => $params["EMAIL"]
+		);
+		$maxinWeek=2;
+		$el = new CIblockElement();
+		if ($rs = $el->getList(array(), array("IBLOCK_ID" => 35,"ACTIVE"=>"Y", "PROPERTY_IP" => $params["IP"], "PROPERTY_USER" => $params["USER"]), false, false, array("ID","PROPERTY_BLOCK_FOR"))->fetch()) {
+			if(MakeTimeStamp($rs["PROPERTY_BLOCK_FOR_VALUE"])<=time()) {
+				$db_props = CIBlockElement::GetProperty(35, $rs["ID"], array("sort" => "asc"), Array("CODE" => "ORDERS_COUNT"));
+				$db_props = $db_props->fetch();
+				if ((intval($db_props["VALUE"]) - intval($db_props["DESCRIPTION"])) >= $maxinWeek) {
+					$stmp = AddToTimeStamp(array("DD" => 7), time());
+					$el->SetPropertyValuesEx($rs["ID"], 35, array("BLOCK_FOR" => ConvertTimeStamp($stmp, "FULL", "ru")));
+					$db_props["DESCRIPTION"] = $db_props["VALUE"];
+				}
+				$el->SetPropertyValuesEx($rs["ID"], 35, array("ORDERS_COUNT" => array("VALUE" => (intval($db_props["VALUE"]) + 1), "DESCRIPTION" => intval($db_props["DESCRIPTION"]))));
+				$el->update($rs["ID"], $arLoadProductArray);
+			}else{
+				echo "Пользователь заблокирован до ".$rs["PROPERTY_BLOCK_FOR_VALUE"];
+			}
+		} else {
+			$arLoadProductArray["PROPERTY_VALUES"] = array(
+				"IP" => $params["IP"],
+				"USER" => $params["USER"],
+				"ORDER_COUNT" => intval($params["ORDER_COUNT"]) > 0 ? intval($params["ORDER_COUNT"]) : 0,
+				"USER_EMAIL" => $params["EMAIL"],
+				"USER_NAME" => $params["LOGIN"]
+			);
+			$el->add($arLoadProductArray);
+		}
 
+	}
+	public static function unBlockUser($params){
+		if (!CModule::IncludeModule("iblock")) die();
+		$id=intval($params["ID"]);
+		if($id>0){
+			$el = new CIblockElement();
+			$el->SetPropertyValuesEx($id, 35, array("BLOCK_FOR" => ""));
+		}
+	}
+	public static function progressClip($clipID){ /* Метод ускорения клипа пользователя*/
+		global $USER;
+		if (!CModule::IncludeModule("iblock")) die();
+		$el = new CIblockElement();
+		if ($rs = $el->getList(array(), array("IBLOCK_ID" => 33, "ID" => $clipID, "PROPERTY_USER" => $USER->getID()), false, false, array("ID", "NAME"))->fetch()) {
+			$el->SetPropertyValuesEx($rs["ID"], 33, array("TELL_FRIENDS" => 49));
+			$el->update($rs["ID"],array("NAME"=>$rs["NAME"]));
+			return true;
+		} else {
+			return false;
+		}
+	}
 
+}
 ?>
