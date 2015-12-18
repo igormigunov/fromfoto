@@ -71,6 +71,15 @@ if (!file_exists($uploaddir)) {
 </div>
 <div class="popup">
 </div>
+<div id="preview_doc" class="popup" style="display: none; z-index: 1000">
+	<div class="popup-container with_border" style="margin: 0 auto 0;
+    top: 46px;
+    width: 600px;
+    padding-bottom: 0;">
+		<a href="javascript:void(0)" id="vs_close_btn" onclick="$('#preview_doc').hide()">&nbsp;</a>
+		<iframe src="http://docs.google.com/gview?url=http://fromfoto.com/step_three/document.docx&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe>
+	</div>
+</div>
 <div class="popup" style="position: absolute; z-index: 999; background: transparent none repeat scroll 0% 0%; width: 120%; left: -10%;">
 	<div class="popup-container with_border" style="margin: 0 auto 0; top: 20px; width: 100%;">
 		<div class="wait popup-wait" style="text-align: center; padding: 40px 70px;">
@@ -121,11 +130,11 @@ if (!file_exists($uploaddir)) {
 				<br /><br />
 			</div>
 			<div>
-				<a class="button-slide" href="/fljvrFG/" id="go_next" style="width: 310px; text-transform: uppercase; font-size: 12px; height: 35px; line-height: 35px;">
+				<a class="button-slide" href="/fljvrFG/?PID=<?=$_REQUEST["PRODUCT_ID"]?>&MAKER=1" id="go_next" style="width: 310px; text-transform: uppercase; font-size: 12px; height: 35px; line-height: 35px;">
 					Теперь все правильно, дальше
 				</a>
 			</div>
-			<div style="font-family: arial, sans-serif; font-size: 11px">Нажимая "дальше", Вы принимаете условия <a href="/viewDoc/" target="_blank" style="color:blue">Пользовательского соглашения</a></div>
+			<div style="font-size: 70%">Нажимая "дальше" Вы принимаете условия <a style="color:blue" href="javascript:void(0)" onclick="$('#preview_doc').show()">Пользовательского соглашения</a></div>
 		</div>
 	</div>
 </div>
@@ -506,7 +515,7 @@ if (!file_exists($uploaddir)) {
 				setCrop: {cropX:setx,cropY:sety,cropW:new_width_jcrop,cropH:new_height_jcrop},
 				result: {cropX:setx,cropY:sety,cropW:new_width_jcrop,cropH:new_height_jcrop}
     		}).on('cropbox', function(e, data) {
-				//num = num-1;
+				num = num | 0
 				coords[settings[num][0]][0] = data.cropX;
 
 				coords[settings[num][0]][1] = data.cropW;
@@ -612,21 +621,218 @@ if (!file_exists($uploaddir)) {
 				coords[num_img][8] = parseInt($(this).attr("real_height")) / parseInt($('.img_area').height());
 			}
 		}
-		$.post("<?=SITE_DIR?>ajax/save_coords.php", {coords:coords});
+		$.post("<?=SITE_DIR?>ajax/save_coords.php", {coords:coords},function(data){
+			$url="/home/admin/zakaz/<?=$_REQUEST["PRODUCT_ID"]?>_33/"+$('#img_n-'+(num_img-1)).attr('file_name').replace(/_/g,"");
+			$.post("<?=SITE_DIR?>ajax/resize_img_to_change_im.php", {coords:coords,num_img:num_img,imgs:$url,prod_id:<?=$_REQUEST["PRODUCT_ID"]?>}, function(data){
+				$('#img_n-'+(num_img-1)).addClass("ui-selected")
+		});});
 
 		$('#img_n-'+num_img).attr('clip_width', parseInt(coords[num_img][6]));
 		$('#img_n-'+num_img).attr('clip_height', parseInt(coords[num_img][7]));
-
-/*		
-		$.post("<?=SITE_DIR?>ajax/resize_img_to_change.php", {coords:coords,num_img:num_img,imgs:$('#img_n-'+num_img).attr('href')}, function(data){
-			console.log(data);
-			//alert(data);
-		});
-*/
 	});
 </script>
 <style>
 	.show_popup.in img {
 		height: auto;
 	}
+</style>
+
+<style>
+
+	body{
+
+		padding-top:0px !important;
+
+	}
+
+	.col-sm-3 {
+		width: 17%;
+	}
+
+	.navbar-nav {
+		float: right !important;
+		margin-top: 30px !important;
+		transition: margin-top 0.2s linear 0s !important;
+	}
+
+	.sticky .navbar-nav {
+		margin-top: 17px !important;
+	}
+
+	.navbar.sticky {
+		border-radius:0px;
+		border: none;
+	}
+
+
+
+	.create_video .show_img{
+
+		display:none;
+
+		margin-bottom:10px;
+
+
+	}
+
+
+
+	.create_video .video_maket{
+		margin: 30px auto !important;
+
+		padding-right:10px;
+
+	}
+
+
+
+	.create_video .video_maket video{
+
+		width:453px;
+
+		height:256px;
+
+	}
+
+
+
+	.create_video .clear_line {width:100%; clear:both; float:none !important; height:1px !important; font-size:1px !important; border:none; margin-bottom: 20px; padding:0 !important; background:#7A829E;}
+
+
+
+	.create_video .clear{width:100%; clear:both; float:none !important; height:1px !important; font-size:1px !important; border:none; margin: 0px !important; padding:0 !important; background:none !important;}
+
+
+
+	.create_video .container {
+		width: 794px;
+		margin: auto;
+		padding: 0;
+	}
+
+
+
+	.create_video #fileupload .files tr{
+
+		cursor:move;
+
+	}
+
+
+
+	.create_video .text_inp{
+		background:#EEEEEE;
+
+		width:400px;
+
+		height:80px;
+
+	}
+
+
+
+	.create_video .text_area_block{
+
+		margin-right:10px;
+
+		margin-bottom:20px;
+
+		float:left;
+
+	}
+
+
+
+
+
+	.create_video .player{
+
+		margin-bottom:10px;
+
+	}
+
+	.create_video .player a{
+
+		padding-right: 5px;
+
+		cursor:pointer;
+
+	}
+
+	.create_video .player img{
+
+		border:none;
+
+	}
+
+	.create_video .show_text{
+
+		border: 1px solid #DADADA;
+
+		margin-bottom: 5px;
+
+		max-width: 300px;
+
+		text-align: center;
+
+		display:none;
+
+	}
+
+	.create_video .min_size{
+
+		display:none;
+
+	}
+
+	.create_video .min_size .size{
+
+		font-weight:bold;
+
+	}
+
+	.create_video #mp3_viz{
+
+		float:left;
+
+	}
+
+	.create_video #answer {
+
+		text-align:center !important;
+
+	}
+
+	.img_prev_upl{
+		opacity:1 !important;
+	}
+
+	.img_prev_upl.in:nth-child(n+<?=sizeof($photo)+1;?>){
+		opacity:0.3 !important;
+	}
+	.show_img.img_clips{
+		width:auto !important;
+		height:auto !important;
+	}
+
+	.video_work_station .img_area{
+		overflow:visible !important;
+	}
+	.cropFrame{
+		border:2px solid #fff;
+	}
+
+	.video_work_station .img_area{
+		height:290px !important;
+		width:517px !important;
+		margin:4px 0 0 31px !important;
+	}
+	body{
+		background:#fff !important;
+	}
+	.imgs_uploader .img_prev_upl img {
+		cursor: pointer !important;
+		height: 64px;
+	}
+
 </style>

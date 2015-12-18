@@ -2,9 +2,8 @@
 <?
 CModule::IncludeModule("iblock");
 
-/*$id = explode("_",$_REQUEST["zakaz1"]);
-$clip_id = $id[0];*/
-$clip_id=$_REQUEST["zakaz1"];
+$id = explode("_",$_REQUEST["zakaz1"]);
+$clip_id = $id[0];
 if(!$clip_id){
 	exit("1");
 }
@@ -37,8 +36,11 @@ if($clip = $res->GetNext()){
 	);
 
 	$el = new CIBlockElement;
-	$res = $el->Update($clip_id, $arLoadProductArray);
-	echo 'получено';
+	if($res = $el->Update($clip_id, $arLoadProductArray)) {
+		echo 'получено';
+	}else{
+		echo $el->LAST_ERROR;
+	}
 }
 
 ?>

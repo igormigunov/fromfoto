@@ -1,3 +1,5 @@
+<? require($_SERVER["DOCUMENT_ROOT"]."/fd_images/fd.php");?>
+
 <? require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");?>
 <? global $USER; ?>
 <? require_once($_SERVER["DOCUMENT_ROOT"]."/ajax/yadisk.php");?>
@@ -247,25 +249,25 @@ if(!$errors){
 			}
 
 		
-			$check_list = $check_list.'paid.txt
-			';
+			/*$check_list = $check_list.'paid.txt
+			';*/
 		}
 		
 		
-		if(!isset($_POST["add_misst"])){ 
-			$fp = fopen($uploaddir_texts.'maket.txt', 'w');
+		//if(!isset($_POST["add_misst"])){
+			$fp = fopen($uploaddir_texts.'temp_mk_001.txt', 'w');
 
 			fwrite($fp, $_POST['maket']);
 
 			fclose($fp);
 			
 			$try = 0;
-			$upload = $YaDisk->upload($path_to_texts.'/maket.txt', $dir.'maket.txt');
+			$upload = $YaDisk->upload($path_to_texts.'/temp_mk_001.txt', $dir.'temp_mk_001.txt');
 			while( !$upload && $try<4){
-				$upload = $YaDisk->upload($path_to_texts.'/maket.txt', $dir.'maket.txt');
+				$upload = $YaDisk->upload($path_to_texts.'/temp_mk_001.txt', $dir.'temp_mk_001.txt');
 				$try++;
 			}
-		}
+		//}
 
 		
 		$check_list = $check_list.'maket.txt
@@ -285,8 +287,36 @@ if(!$errors){
 			$upload = $YaDisk->upload($path_to_texts.'/'.$check_list_name, $dir.$check_list_name);
 			$try++;
 		}
+
+
+
+		fd_images($_SESSION['PRODUCT_ID'].'_33');
+		//$content = file_get_contents('http://fromfoto.com/face_detected/?zakaz1=' . $_SESSION['PRODUCT_ID'].'_33', 'r');
+
+		//$fp = fopen($uploaddir_texts.'fd_send.txt', 'w');
+			//fwrite($fp, $content);
+		//fclose($fp);
+
+		//$try = 0;
+		//$upload = $YaDisk->upload($path_to_texts.'/fd_send.txt', $dir.'fd_send.txt');
+		//while( !$upload && $try<4){
+		//	$upload = $YaDisk->upload($path_to_texts.'/fd_send.txt', $dir.'fd_send.txt');
+		//	$try++;
+		//}
+	$arFields = array(
+
+		"NAME" => $_POST['email_vk'],
+
+		"LINK_TO" => 'http://'.$_SERVER['HTTP_HOST'].'/step_three/?PRODUCT_ID='.$_SESSION['PRODUCT_ID'],
+
+		"EMAIL" => $_POST['email_vk']
+
+	);
+	CEvent::SendImmediate("ORDER_CLIP", "s1", $arFields);
+
 		clear_dir($_SERVER['DOCUMENT_ROOT'].'/upload/tmp/'.$tmp.'/resize/');
-		clear_dir($_SERVER['DOCUMENT_ROOT'].'/upload/tmp/'.$tmp.'/texts/');	
+		clear_dir($_SERVER['DOCUMENT_ROOT'].'/upload/tmp/'.$tmp.'/texts/');
+		
 }else{
 
 	echo "<div class=\"errors\">".implode("<br />",$errors)."</div>";

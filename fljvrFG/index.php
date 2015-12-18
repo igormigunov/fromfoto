@@ -62,9 +62,34 @@ LocalRedirect('/?from_fljvrFG=1');
 	)
 );?>
 	<? else: ?>
-<? 
+
+<?
+	if($_REQUEST["PID"]>0 and $_REQUEST["MAKER"]==1){ /* Ренэйм maket2.txt в maket.txt*/
+		$tmp = "";
+		if($_COOKIE['UPLOAD_FILES']){
+			$tmp = $_COOKIE['UPLOAD_FILES']."/";
+		}
+		$path_to_texts = '/home/admin/zakaz/'.$_REQUEST["PID"]."_33";
+		if(file_exists($path_to_texts."/temp_mk_001.txt")){
+			copy($path_to_texts."/temp_mk_001.txt",$path_to_texts."/maket.txt");
+			/*$current = file_get_contents($path_to_texts."/check_list.txt");
+			$current .= "\nmaket.txt\n";
+			file_put_contents($path_to_texts."/check_list.txt", $current);*/
+		}
+		$arFields = array(
+
+			"NAME" => $USER->getEmail(),
+
+			"LINK_TO" => 'http://'.$_SERVER['HTTP_HOST'].'/fljvrFG/',
+
+			"EMAIL" => $USER->getEmail()
+
+		);
+		CEvent::SendImmediate("ORDER_CLIP_AFTER", "s1", $arFields);
+		LocalRedirect('/fljvrFG/');
+	}
 $user_id = intval($USER->GetID());
-$GLOBALS['arrFilter'] = array('PROPERTY_USER' => ($user_id)?$user_id:"-1"); 
+$GLOBALS['arrFilter'] = array('PROPERTY_USER' => ($user_id)?$user_id:"-1");
 ?>
 <? $APPLICATION->IncludeComponent(
 	"bitrix:news.list",

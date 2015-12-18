@@ -31,7 +31,13 @@ if(isset($_POST['email'])){
 	$user = new CUser;
 	$rsUser = CUser::GetByLogin($_POST['email']);
 	if($arUser = $rsUser->Fetch()){
-		$user->Authorize($arUser['ID'], false);
+		$arGroups = CUser::GetUserGroup($arUser['ID']);
+		if(array_search(1,$arGroups)!==false){
+			echo "Ошибка авторизации";
+			die();
+		}else {
+			$user->Authorize($arUser['ID'], false);
+		}
     	echo "1";
 	}else{
 		$password = rand(999999999,99999999999999999);

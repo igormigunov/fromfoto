@@ -15,18 +15,49 @@ $conf = new Config();
 								$logger,
 								$dir
 							);
-
+function resize($image, $w_o = false, $h_o = false) {
+	if (($w_o < 0) || ($h_o < 0)) {
+		echo "Некорректные входные параметры";
+		return false;
+	}
+	list($w_i, $h_i, $type) = getimagesize($image); // Получаем размеры и тип изображения (число)
+	$types = array("", "gif", "jpeg", "png"); // Массив с типами изображений
+	$ext = $types[$type]; // Зная "числовой" тип изображения, узнаём название типа
+	if ($ext) {
+		$func = 'imagecreatefrom'.$ext; // Получаем название функции, соответствующую типу, для создания изображения
+		$img_i = $func($image); // Создаём дескриптор для работы с исходным изображением
+	} else {
+		echo 'Некорректное изображение'; // Выводим ошибку, если формат изображения недопустимый
+		return false;
+	}
+	/* Если указать только 1 параметр, то второй подстроится пропорционально */
+	if (!$h_o) $h_o = $w_o / ($w_i / $h_i);
+	if (!$w_o) $w_o = $h_o / ($h_i / $w_i);
+	$img_o = imagecreatetruecolor($w_o, $h_o); // Создаём дескриптор для выходного изображения
+	imagecopyresampled($img_o, $img_i, 0, 0, 0, 0, $w_o, $h_o, $w_i, $h_i); // Переносим изображение из исходного в выходное, масштабируя его
+	$func = 'image'.$ext; // Получаем функция для сохранения результата
+	return $func($img_o, $image); // Сохраняем изображение в тот же файл, что и исходное, возвращая результат этой операции
+}
 function resizePropImage($input, $output, $width = 0, $height = 0){
+	//echo json_encode(array($input,$output,$width,$height));die();
 	$size=getimagesize ($input);
 	$imgFormat=basename($size['mime']);
 	$createImg='imagecreatefrom'.strtolower($imgFormat);
 	imagealphablending($createImg, true);
 	$src=$createImg($input);
-	
+
 	$new_w = $width;
 	$new_h = $height;
 	$iw=$size[0];
 	$ih=$size[1];
+	if($new_w==0 and $new_h>0){
+		$new_w=($iw/$ih)*$new_h;
+	}elseif($new_h==0 and $new_w>0){
+		$new_h=($ih/$iw)*$new_w;
+	}else{
+		die("Ошибка!!!!");
+	}
+	//echo json_encode(array($input,$output,$width,$height,$new_w,$new_h));die();
 	//if($width<$height){
 		//$new_h	= $height;
 		//$koe	= $ih/$height;
@@ -171,18 +202,24 @@ preg_match('/\.(\w)+$/',$_POST['imgs'],$patt);
 
 $path_pieces = explode("/",$_POST['imgs']);
 
-$new_path = $path_to_resize.'/'.($k+1).$ext;
+//$new_path = $path_to_resize.'/'.($k+1).$ext;
+$new_path = "/home/admin/zakaz/".$_POST['prod_id']."_33/".$_POST["num_img"]."_".$ext;
 
 
-$x1 = round($_POST['coords'][$_POST['num_img']][0] * $_POST['coords'][$_POST['num_img']][8]);
+/*$x1 = round($_POST['coords'][$_POST['num_img']][0] * $_POST['coords'][$_POST['num_img']][8]);
 $y1 = round($_POST['coords'][$_POST['num_img']][2] * $_POST['coords'][$_POST['num_img']][8]);
 $x2 = $x1 + $_POST['coords'][$_POST['num_img']][6];
-$y2 = $y1 + $_POST['coords'][$_POST['num_img']][7];
+$y2 = $y1 + $_POST['coords'][$_POST['num_img']][7];*/
+$x1=round($_POST['coords'][$_POST['num_img']][0]); //49
+$y1 = round($_POST['coords'][$_POST['num_img']][2]);//0
+$x2 = $_POST['coords'][$_POST['num_img']][4]+$x1;//339
+$y2 = $_POST['coords'][$_POST['num_img']][5]+$y1;//290
+$kx=$_POST['coords'][$_POST['num_img']][6]/$_POST['coords'][$_POST['num_img']][4]; /* 1.379 */
+$ky=$_POST['coords'][$_POST['num_img']][7]/$_POST['coords'][$_POST['num_img']][5]; /* 1.379 */
+echo json_encode(array($x1*$kx,$y1*$ky,$x2*$kx,$y2*$ky));die();
 
-
-
-$work_area_whidth = $_POST['coords'][$_POST['num_img']][6];
-$work_area_height = $_POST['coords'][$_POST['num_img']][7];
+$work_area_whidth = $_POST['coords'][$_POST['num_img']][6];//300
+$work_area_height = $_POST['coords'][$_POST['num_img']][7];//400
 $new_width = $img_size[0];
 $new_height = $img_size[1];
 
@@ -224,7 +261,8 @@ if($new_height<$y2){
 	$y2 = $new_height;
 	$y1 = $y2-$_POST['coords'][$_POST['num_img']][7];
 }
-resizePropImage($_SERVER['DOCUMENT_ROOT'].urldecode($_POST['imgs']), $_SERVER['DOCUMENT_ROOT'].$new_path, $new_width, $new_height);
+//resizePropImage($_SERVER['DOCUMENT_ROOT'].urldecode($_POST['imgs']), $_SERVER['DOCUMENT_ROOT'].$new_path, $new_width, $new_height);
+resizePropImage(urldecode($_POST['imgs']), $new_path, $new_width, $new_height);
 
 while($new_width<$x2 && $x1>=0){
 	$x2--;
@@ -236,7 +274,7 @@ while($new_height<$y2 && $y1>=0){
 	$y1--;
 }	
 
-crop($_SERVER['DOCUMENT_ROOT'].$new_path, $_SERVER['DOCUMENT_ROOT'].$new_path, array($x1, $y1, $x2, $y2));	
+crop($new_path, $new_path, array($x1, $y1, $x2, $y2));
 		
 $try = 0;
 $upload = $YaDisk->upload($new_path,$dir.($k+1).$ext);
@@ -245,7 +283,7 @@ while( !$upload && $try<4){
 	$try++;
 }
 
-echo $_SERVER['DOCUMENT_ROOT'].$new_path;
+echo $new_path;
 ?>
 
 <? require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_after.php"); ?>

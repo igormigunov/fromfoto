@@ -93,16 +93,16 @@ if(!$errors){
 
 	if($PRODUCT_ID = $el->Add($arLoadProductArray)){
 		$_SESSION['PRODUCT_ID'] = $PRODUCT_ID;
-		$arFields = array(
+		/*$arFields = array(
 
 			"NAME" => $_POST['email_vk'],
 			
-			"LINK_TO" => 'http://'.$_SERVER['HTTP_HOST'].'/fljvrFG/prev.php?PRODUCT_ID='.$PRODUCT_ID,
+			"LINK_TO" => 'http://'.$_SERVER['HTTP_HOST'].'/step_three/?PRODUCT_ID='.$PRODUCT_ID,
 
   			"EMAIL" => $_POST['email_vk']
 
 			);
-		CEvent::SendImmediate("ORDER_CLIP", "s1", $arFields);
+		CEvent::SendImmediate("ORDER_CLIP", "s1", $arFields);*/
 
 		helpertools::add2Statistics(array(
 			"IP"=>$_POST["user_ip"],

@@ -6,7 +6,6 @@ if($_COOKIE['UPLOAD_FILES']){
 	$tmp = $_COOKIE['UPLOAD_FILES']."/";
 }
 $uploaddir = $_SERVER['DOCUMENT_ROOT'].'/upload/tmp/'.$tmp.'data.txt';
-
 $arImages = array();
 
 foreach($_POST['coords'] as $k=>$v){

@@ -12,13 +12,14 @@ $link=$USER->IsAuthorized()?"/fljvrFG/":"#";
     <span class="ready-klip">посмотрите готовый клип, если уже сделали заказ</span>
     <div class="mail with-button">
 	<? if(!$USER->IsAuthorized()): ?>
-      <?$APPLICATION->IncludeComponent("bitrix:system.auth.form","only_soc",Array(
+      <?/*$APPLICATION->IncludeComponent("bitrix:system.auth.form","only_soc",Array(
 			"REGISTER_URL" => "register.php",
 			"FORGOT_PASSWORD_URL" => "",
 			"PROFILE_URL" => "profile.php",
 			"SHOW_ERRORS" => "Y" 
 			)
-		);?>
+		);*/?>
+		<input type="text" name="USER_EMAIL" id="USER_EMAIL4AUTH"><a href="javascript:void(0)" class="button-slide" style="font-size: 11px;" onclick="doAuthUser()">перейти в мой кабинет</a>
 	<? else: ?>
 		<? if(preg_match("/OKuser/i", $USER->GetLogin())):?>
 			<a href="#" style="margin-bottom: 10px; width: 256px;" class="button-slide under-content-title set_sess_vk reload_p">АВТОРИЗОВАТЬСЯ В ОДНОКЛАССНИКАХ</a>
@@ -64,7 +65,16 @@ $link=$USER->IsAuthorized()?"/fljvrFG/":"#";
         }
         return false;
     });
-    
+    function doAuthUser(){
+		$.post("/ajax/authoriz_by_email.php",{email:$('#USER_EMAIL4AUTH').val()}, function(data){
+
+			if(parseInt(data)==1){
+				window.location.href = '/fljvrFG/'
+			}else{
+				alert(data)
+			}
+		});
+	}
 	function check_send(_val){
 		 $.post("/ajax/authoriz_by_email.php",{email:_val, chekcode:<?=$arParams["CHEKCODE"]?>}, function(data){
 				if(parseInt(data)==1){
