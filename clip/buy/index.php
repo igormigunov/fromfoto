@@ -1,4 +1,5 @@
 <? require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+localRedirect("/clip/?num=".$_REQUEST["num"]);
 $APPLICATION->SetPageProperty("title", "Мой клип");
 $APPLICATION->SetPageProperty("keywords", "fromfoto.com - создание клипов!");
 $APPLICATION->SetPageProperty("description", "fromfoto.com - создание клипов!");
